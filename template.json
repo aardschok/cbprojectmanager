@@ -1,0 +1,154 @@
+{
+  "schema": "avalon-core:project-2.0",
+  "type": "project",
+  "name": "TEMPLATE",
+  "data": {},
+  "config": {
+    "fps": 25,
+    "schema": "avalon-core:config-1.0",
+    "apps": [
+      {
+        "name": "shell",
+        "label": "Shell"
+      },
+      {
+        "name": "maya2018_yeti",
+        "label": "Autodesk Maya 2018"
+      },
+      {
+        "name": "maya2018_yeti3",
+        "label": "Autodesk Maya 2018 (YETI 3)"
+      },
+      {
+        "name": "houdini16",
+        "label": "SideFx Houdini 16.0"
+      },
+      {
+        "name": "fusion9",
+        "label": "Fusion 9"
+      }
+    ],
+    "tasks": [
+      {
+        "name": "model",
+        "icon": "user-plus"
+      },
+      {
+        "name": "render",
+        "icon": "lightbulb-o"
+      },
+      {
+        "name": "rigAnim",
+        "icon": "child"
+      },
+      {
+        "name": "rigGroom",
+        "icon": "scissors"
+      },
+      {
+        "name": "lookdev",
+        "icon": "paint-brush"
+      },
+      {
+        "name": "layout",
+        "icon": "cubes"
+      },
+      {
+        "name": "setdress",
+        "icon": "cubes"
+      },
+      {
+        "name": "editing",
+        "icon": "camera"
+      },
+      {
+        "name": "fx",
+        "icon": "bolt"
+      },
+      {
+        "name": "fxGroom",
+        "icon": "scissors"
+      },
+      {
+        "name": "comp",
+        "icon": "magic"
+      },
+      {
+        "name": "lighting",
+        "icon": "lightbulb-o"
+      },
+      {
+        "name": "animate",
+        "icon": "wheelchair"
+      },
+      {
+        "name": "rigFur",
+        "icon": "leaf"
+      }
+    ],
+    "families": [
+      {
+        "name": "colorbleed.animation",
+        "icon": "male",
+        "label": "Animation"
+      },
+      {
+        "name": "colorbleed.camera",
+        "icon": "video-camera",
+        "label": "Camera"
+      },
+      {
+        "name": "colorbleed.look",
+        "icon": "paint-brush",
+        "label": "Look"
+      },
+      {
+        "name": "colorbleed.mayaAscii",
+        "icon": "file-archive-o",
+        "label": "Maya ASCII"
+      },
+      {
+        "name": "colorbleed.model",
+        "icon": "cube",
+        "label": "Model"
+      },
+      {
+        "name": "colorbleed.pointcache",
+        "icon": "gears",
+        "label": "Pointcache"
+      },
+      {
+        "name": "colorbleed.rig",
+        "icon": "wheelchair",
+        "label": "Rig"
+      },
+      {
+        "name": "colorbleed.setdress",
+        "icon": "cubes",
+        "label": "Setdress"
+      },
+      {
+        "name": "colorbleed.yetiRig",
+        "icon": "leaf",
+        "label": "Yeti Rig"
+      },
+      {
+        "name": "colorbleed.yeticache",
+        "icon": "leaf",
+        "label": "Yeti Cache"
+      },
+      {
+        "name": "colorbleed.imagesequence",
+        "icon": "photo",
+        "state": false,
+        "label": "Image Sequence"
+      }
+    ],
+    "template": {
+      "work": "{root}/{project}/{silo}/{asset}/work/{task}/{app}",
+      "workfile": "{asset[name]}_{task[name]}_v{version:0>3}<_{comment}>",
+      "publish": "{root}/{project}/{silo}/{asset}/publish/{subset}/v{version:0>3}/{subset}.{representation}"
+    }
+  },
+  "parent": null
+}
