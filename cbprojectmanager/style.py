@@ -1,16 +1,21 @@
+"""
+These small stylesheets are to add an extra bit of flare to the existing
+darrk style sheet
+"""
+
 from avalon.style import colors
 
 
 create_widget = """QLineEdit {
-font-size: 30px
+font-size: 24px;
 }
 
 QLabel {
-font-size: 30px
+font-size: 24px;
 }
 
 QComboBox {
-font-size: 30px
+font-size: 24px;
 }
 
 """
@@ -25,15 +30,16 @@ border: none;
 QPushButton:hover {
 color: black;
 border: 2px solid %s;
-background: %s
+background: %s;
 }
-""" % (colors.dark,  # Default background color
-       colors.default,
-       colors.default)  # Hover background color
+""" % (
+    colors.dark,  # Default background color
+    colors.default,
+    colors.default)  # Hover background color
 
 preview_button = """QPushButton:disabled {
 border: none;
-color: %s
+color: %s;
 }""" % colors.light
 
 preview = """QTextEdit {
