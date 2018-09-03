@@ -81,6 +81,10 @@ def create_collection(name):
     return collection
 
 
+def drop_collection(nam_or_collection):
+    self._database.drop_collection(nam_or_collection)
+
+
 def create_project_definition(collection, data):
     """Create a project definition in the given colleciton
 
