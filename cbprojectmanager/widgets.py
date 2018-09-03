@@ -13,7 +13,7 @@ from cbprojectmanager import lib, style
 class CreateProjectWidget(QtWidgets.QWidget):
     """Widget to create a new collection and project definition"""
 
-    order = 0
+    order = -1
     label = "Create"
 
     data_changed = QtCore.Signal()
@@ -21,6 +21,10 @@ class CreateProjectWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
+        self.log = logging.getLogger(__name__)
+
+        self.setWindowTitle("Create New Project")
+        self.setWindowFlags(QtCore.Qt.Dialog)
         self.setStyleSheet(style.create_widget)
 
         layout = QtWidgets.QVBoxLayout()
@@ -61,9 +65,14 @@ class CreateProjectWidget(QtWidgets.QWidget):
         create_button.setStyleSheet(style.flat_button)
         create_button.setFixedWidth(500)
 
+        cancel_button = QtWidgets.QPushButton("Cancel")
+        cancel_button.setStyleSheet(style.flat_button)
+        cancel_button.setFixedWidth(500)
+
         layout.addLayout(create_vlayout)
         layout.addLayout(clone_vlayout)
         layout.addWidget(create_button)
+        layout.addWidget(cancel_button)
 
         self.setLayout(layout)
 
@@ -73,6 +82,7 @@ class CreateProjectWidget(QtWidgets.QWidget):
         self.clone_project = clone_project
 
         self.create = create_button
+        self.cancel = cancel_button
 
         # Build connections
         self.connect_signals()
@@ -85,23 +95,53 @@ class CreateProjectWidget(QtWidgets.QWidget):
 
     def populate_clone_project(self):
 
-        self.clone_project.insertItem(0, "<None>")
-
+        # Check if widget has a parent
         if self.parent() is None:
             return
 
+        # Get project from the parent, {"projectName": ObjectId(123445)}
         projects = self.parent().projects
-        for i, project in enumerate(projects):
-            self.clone_project.insertItem(i + 1,
-                                          project["name"],
-                                          userData=project["_id"])
+        for i, (name, _id) in enumerate(projects.items()):
+            self.clone_project.insertItem(i + 1, name, userData=_id)
 
     def connect_signals(self):
         self.clone_toggle.toggled.connect(self.toggle_clone_enabled)
+        self.create.clicked.connect(self.on_create_project)
+        self.cancel.clicked.connect(self.close)
 
     def toggle_clone_enabled(self):
+
+        self.clone_project.blockSignals(True)
+
+        self.clone_project.clear()
+        self.populate_clone_project()
+
         state = self.clone_toggle.isChecked()
         self.clone_project.setEnabled(state)
+
+        self.clone_project.blockSignals(False)
+
+    def on_create_project(self):
+
+        project_name = self.project_name.text()
+        assert project_name, "Name cannot be empty!"
+
+        if self.clone_toggle.isChecked():
+            clone_from = self.clone_project.currentText()
+            template = lib.get_project_template(clone_from)
+        else:
+            template = lib.get_template()
+
+        self.log.info("Creating project ..")
+        self.log.info("Project name: %s" % project_name)
+
+        print("0")
+        result = lib.create_project(project_name, template)
+        if not result:
+            self.log.error("Error occurred in creating project")
+            return
+
+        self.close()
 
 
 class ManageProjectWidget(QtWidgets.QWidget):
