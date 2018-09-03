@@ -303,9 +303,9 @@ class AddTaskIconDialog(QtWidgets.QWidget):
 
         self.fontlib = {}
 
-        # self.connect_signals()
+        self.connect_signals()
 
-        # self.refresh()
+        self.refresh()
 
     def refresh(self):
 
@@ -313,7 +313,7 @@ class AddTaskIconDialog(QtWidgets.QWidget):
         self._populate_icons()
 
     def _install_fontlib(self):
-        return
+
         # TODO: fix qta thingy
         package = os.path.dirname(qta.__file__)
         fonts = os.path.join(package, "fonts",
