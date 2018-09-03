@@ -82,6 +82,20 @@ def create_collection(name):
 
 
 def create_project_definition(collection, data):
+    """Create a project definition in the given colleciton
+
+    When giving a divert keys, the function will temporarely take this
+    information from the data to ensure `schema.validate` is successful.
+
+    Args:
+        collection(pymongo.collection.Collection): collection from database
+        data(dict): project data
+        divert_keys(list, Optional): lists of a key
+
+    Returns:
+        bson.ObjectId
+
+    """
 
     # Validate data for project
     data["schema"] = "avalon-core:project-2.0"
@@ -136,11 +150,23 @@ def get_projects():
 
 
 def get_project(name):
-    """Get the project by name
+    """Get the project document by name
 
     Args:
         name(str): name of the project
+    Returns:
+        dict
+
     """
+    projects = [p for p in list(get_projects()) if p["name"] == name]
+    if len(projects) == 1:
+        return projects[0]
+
+    return
+
+
+def get_project_template(name_or_project):
+    """Return the template of a project
 
     The function will strip out the project's name and unique ID to make it
     a reusable template
