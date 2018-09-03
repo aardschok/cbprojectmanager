@@ -71,12 +71,12 @@ def create_collection(name):
     """
 
     # Check if name is not already taken
-    collections = self._database.list_collection_names()
+    collections = list(self._database.collection_names())
     if name in collections:
         raise RuntimeError("Collection with name `%s` already exists" % name)
 
     collection = self._database.create_collection(name)
-    assert name in self._database, "This is a bug!"
+    assert get_collection(name), "This is a bug!"
 
     return collection
 
