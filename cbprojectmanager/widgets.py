@@ -152,6 +152,7 @@ class ManageProjectWidget(QtWidgets.QWidget):
 
     order = 1
     label = "Manage"
+    data_changed = QtCore.Signal(dict)
 
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
@@ -159,6 +160,7 @@ class ManageProjectWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
 
         text = QtWidgets.QLabel("Under development!")
+        tab_widget = QtWidgets.QTabWidget()
 
         button_hlayout = QtWidgets.QHBoxLayout()
         button_hlayout.addStretch()
@@ -170,12 +172,12 @@ class ManageProjectWidget(QtWidgets.QWidget):
         button_hlayout.addWidget(update_button)
 
         layout.addWidget(text)
+        layout.addWidget(tab_widget)
         layout.addLayout(button_hlayout)
 
         self.setLayout(layout)
 
-
-class PreviewWidget(QtWidgets.QWidget):
+        self.tab_widget = tab_widget
 
     def add_widget(self, widget):
         """Add a widget to the tab widget of the Manage widget
