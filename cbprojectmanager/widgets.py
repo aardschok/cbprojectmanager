@@ -357,32 +357,53 @@ class Navigation(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
 
+        # self.setWindowFlag()
         self.setStyleSheet(style.flat_button)
 
         layout = QtWidgets.QVBoxLayout()
 
+        dynamic_layout = QtWidgets.QVBoxLayout()
+        static_layout = QtWidgets.QVBoxLayout()
+        static_layout.addStretch()
+
+        layout.addLayout(dynamic_layout)
+        layout.addStretch()
+        layout.addLayout(static_layout)
+
+        self.dynamic_layout = dynamic_layout
+        self.static_layout = static_layout
+
         self.setLayout(layout)
         self.layout = layout
 
-    def add_button(self, label, order):
+    def add_button(self, label, order, widget=None):
         """Add a button to the navigation panel with the given label and order
 
         Args:
             label(str): Name displayed on the button
             order(int): Number which dictates its order in the panel
+            widget(QtWidgets.QWidget): Instance of a widget
 
         Returns:
             None
         """
 
+        if order < 0:
+            layout = self.static_layout
+        else:
+            layout = self.dynamic_layout
+
         # Check new position
-        widget = self.layout.itemAt(order)
-        if widget:
+        widget_at_item = layout.itemAt(abs(order))
+        if widget_at_item:
             self.log.warning("Found multiple items for the same order: `%i`"
                              % order)
             return
 
         button = QtWidgets.QPushButton(label)
-        button.clicked.connect(lambda: self.index_changed.emit(order))
+        if widget:
+            button.clicked.connect(partial(widget.show))
 
-        self.layout.insertWidget(order, button)
+        layout.insertWidget(order, button)
+
+        return button
