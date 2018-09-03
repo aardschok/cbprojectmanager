@@ -177,31 +177,31 @@ class ManageProjectWidget(QtWidgets.QWidget):
 
 class PreviewWidget(QtWidgets.QWidget):
 
-    def __init__(self, parent=None):
-        QtWidgets.QWidget.__init__(self, parent=parent)
+    def add_widget(self, widget):
+        """Add a widget to the tab widget of the Manage widget
 
-        self.setStyleSheet(style.preview)
+        Requires the widget to have two custom attributes:
+            - order (int): number which indicated the position
+            - label (str): nice name
 
-        layout = QtWidgets.QVBoxLayout()
+        Args:
+            widget(QtWidgets.QWidget): instance of a widget
 
-        self.preview_field = QtWidgets.QTextEdit()
-        self.preview_field.setReadOnly(True)
-        self.preview_field.setTabStopWidth(4)
+        Returns:
+            None
 
-        layout.addWidget(self.preview_field)
+        """
 
-        self.setLayout(layout)
+        required = ["order", "label"]
+        if all(hasattr(widget, r) for r in required):
+            raise AttributeError("Widget %s is missing an attribute"
+                                 % widget.objectName())
 
-        self.update_data({"project": "",
-                          "silos": "",
-                          "tasks": "",
-                          "applications": ""})
+        has_item = self.tab_widget.itemAt(widget.order)
+        if has_item:
+            raise RuntimeError("Current index `%i` is occupied" % widget.order)
 
-    def update_data(self, data):
-
-        self.preview_field.blockSignals(True)
-        self.preview_field.setText(json.dumps(data, indent=4))
-        self.preview_field.blockSignals(True)
+        self.tab_widget.insertTab(widget.order, widget, widget.label)
 
 
 class TaskWidget(QtWidgets.QWidget):
