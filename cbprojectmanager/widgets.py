@@ -1,12 +1,13 @@
 import os
 import json
 import logging
+from functools import partial
 
-from avalon.vendor.Qt import QtWidgets, QtCore, QtGui
+from avalon.vendor.Qt import QtWidgets, QtCore
 from avalon.vendor import qtawesome as qta
 
-from model import TreeModel, Node
-import style
+from cbprojectmanager.model import TreeModel, Node
+from cbprojectmanager import lib, style
 
 
 class CreateProjectWidget(QtWidgets.QWidget):
@@ -118,10 +119,18 @@ class ManageProjectWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
 
         text = QtWidgets.QLabel("Under development!")
+
+        button_hlayout = QtWidgets.QHBoxLayout()
+        button_hlayout.addStretch()
+
         update_button = QtWidgets.QPushButton("Update")
+        update_button.setMinimumWidth(120)
+        update_button.setStyleSheet(style.flat_button)
+
+        button_hlayout.addWidget(update_button)
 
         layout.addWidget(text)
-        layout.addWidget(update_button)
+        layout.addLayout(button_hlayout)
 
         self.setLayout(layout)
 
