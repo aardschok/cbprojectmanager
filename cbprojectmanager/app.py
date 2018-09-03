@@ -10,14 +10,17 @@ import site
 
 site.addsitedir("C:/Users/Guest4/Development/colorbleed/core")
 
-from avalon.vendor.Qt import QtWidgets, QtCore, QtGui
+from avalon.vendor.Qt import QtWidgets
 from avalon.vendor import qtawesome as qta
 from avalon import api, style
 
-from widgets import CreateProjectWidget, ManageProjectWidget, Navigation
+from cbprojectmanager.widgets import (
+    CreateProjectWidget,
+    ManageProjectWidget,
+    Navigation
+)
 
-import lib
-
+from cbprojectmanager import lib
 
 module = sys.modules[__name__]
 module.window = None
@@ -44,7 +47,7 @@ class Window(QtWidgets.QWidget):
         projects = QtWidgets.QComboBox()
         projects.insertItem(0, "<None>")
 
-        refresh_button = QtWidgets.QPushButton("R")
+        refresh_button = QtWidgets.QPushButton()
         refresh_icon = qta.icon("fa.refresh", color=style.colors.light)
 
         refresh_button.setFixedWidth(24)
@@ -52,6 +55,7 @@ class Window(QtWidgets.QWidget):
 
         refresh_button.setIcon(refresh_icon)
 
+        # Add buttons to the main control layout
         main_control_layout.addStretch()
         main_control_layout.addWidget(database_label)
         main_control_layout.addWidget(projects_label)
@@ -68,23 +72,24 @@ class Window(QtWidgets.QWidget):
         create_widget = CreateProjectWidget(parent=self)
         manager_widget = ManageProjectWidget(parent=self)
 
-        stacked_widget.insertWidget(create_widget.order, create_widget)
         stacked_widget.insertWidget(manager_widget.order, manager_widget)
 
         # Navigation panel widget
         navigation_panel = Navigation()
 
         # Add buttons to navigation panel
-        navigation_panel.add_button(create_widget.label, create_widget.order)
         navigation_panel.add_button(manager_widget.label, manager_widget.order)
 
-        # Add stretch to the navigation panel
-        navigation_panel.layout.addStretch()
+        # By adding widget we create a popup
+        navigation_panel.add_button(create_widget.label,
+                                    create_widget.order,
+                                    widget=create_widget)
 
+        # Add widgets to the SplitWidget
         split_widget.addWidget(navigation_panel)
         split_widget.addWidget(stacked_widget)
         split_widget.setHandleWidth(4)
-        split_widget.setSizes([180, 620])
+        split_widget.setSizes([100, 700])
 
         layout.addLayout(main_control_layout)
         layout.addWidget(split_widget)
