@@ -1,10 +1,8 @@
 {
   "schema": "avalon-core:project-2.0",
   "type": "project",
-  "name": "TEMPLATE",
   "data": {},
   "config": {
-    "fps": 25,
     "schema": "avalon-core:config-1.0",
     "apps": [
       {
@@ -42,10 +40,6 @@
         "icon": "child"
       },
       {
-        "name": "rigGroom",
-        "icon": "scissors"
-      },
-      {
         "name": "lookdev",
         "icon": "paint-brush"
       },
@@ -66,10 +60,6 @@
         "icon": "bolt"
       },
       {
-        "name": "fxGroom",
-        "icon": "scissors"
-      },
-      {
         "name": "comp",
         "icon": "magic"
       },
@@ -80,10 +70,6 @@
       {
         "name": "animate",
         "icon": "wheelchair"
-      },
-      {
-        "name": "rigFur",
-        "icon": "leaf"
       }
     ],
     "families": [
@@ -126,16 +112,6 @@
         "name": "colorbleed.setdress",
         "icon": "cubes",
         "label": "Setdress"
-      },
-      {
-        "name": "colorbleed.yetiRig",
-        "icon": "leaf",
-        "label": "Yeti Rig"
-      },
-      {
-        "name": "colorbleed.yeticache",
-        "icon": "leaf",
-        "label": "Yeti Cache"
       },
       {
         "name": "colorbleed.imagesequence",
