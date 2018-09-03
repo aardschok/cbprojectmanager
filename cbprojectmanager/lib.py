@@ -5,12 +5,15 @@ Note :
     avalon.io.
 
 """
-
-import logging
+import json
+import os
 import sys
 import time
+from copy import deepcopy
+import logging
 
 import pymongo
+import bson
 
 from avalon import api, schema
 
@@ -101,7 +104,6 @@ def get_database_name():
 
 
 def get_collection(name):
-
     exists = next(c for c in self._database.collection_names()
                   if c == name)
     if not exists:
@@ -140,7 +142,37 @@ def get_project(name):
         name(str): name of the project
     """
 
-    projects = list(get_projects())
-    project = next(p for p in projects if p["name"] == name)
+    The function will strip out the project's name and unique ID to make it
+    a reusable template
 
-    return project
+    Args:
+        name_or_project(name, dict): name or project document
+
+    Returns:
+        dict
+
+    """
+    if isinstance(name_or_project, str):
+        document = get_project(name_or_project)
+    elif isinstance(name_or_project, dict):
+        document = name_or_project
+    else:
+        raise TypeError("Input type `%s` not supported" % type(name_or_project))
+
+    # Omit key, value pairs which make the project unique
+    for key in ["name", "_id"]:
+        document.pop(key, None)
+
+    return document
+
+
+def get_template():
+    """Get the project template from"""
+
+    module_dir = os.path.dirname(__file__)
+    template_path = os.path.join(module_dir, "res", "base_template.json")
+
+    with open(template_path, "r") as f:
+        template = json.load(f)
+
+    return template
