@@ -94,7 +94,6 @@ def create_project_definition(collection, data):
     Args:
         collection(pymongo.collection.Collection): collection from database
         data(dict): project data
-        divert_keys(list, Optional): lists of a key
 
     Returns:
         bson.ObjectId
@@ -104,17 +103,57 @@ def create_project_definition(collection, data):
     # Validate data for project
     data["schema"] = "avalon-core:project-2.0"
     schema.validate(data)
-    data.pop()
 
-    # Check if data is not already present
+    # Check if the name is unique
     exists = collection.find_one({"type": "project", "name": data["name"]})
     if exists:
         raise RuntimeError("Project with name `%s` already exists in this "
                            "collection `%s`" % (data["name"], collection.name))
 
-    collection.insert_one(data)
+    result = collection.insert_one(data)
+    assert result.acknowledged, ("Could not create project definition, "
+                                 "please contact a Pipeline TD!")
 
-    pass
+    return result.inserted_id
+
+
+def create_project(name, template=None):
+    """Create a new collection and project
+
+    Args:
+        name(str): name of the new project
+        template(dict): preset data definition to use
+
+    Returns:
+        bool
+
+    """
+
+    if template:
+        data = deepcopy(template)
+        data.update({"name": name})
+    else:
+        data = {"name": name,
+                "type": "project",
+                "data": {},
+                "config": {
+                    "template": {},
+                    "tasks": [],
+                    "apps": []
+                }}
+
+    collection = create_collection(name)
+    try:
+        create_project_definition(collection, data)
+    except Exception as exception:
+        print("Ran into a little problem!")
+        print(exception)
+        print(".. Dropped collection")
+        drop_collection(name)
+
+        return False
+
+    return True
 
 
 def get_database_name():
