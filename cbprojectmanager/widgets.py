@@ -182,10 +182,6 @@ class ManageProjectWidget(QtWidgets.QWidget):
     def add_widget(self, widget):
         """Add a widget to the tab widget of the Manage widget
 
-        Requires the widget to have two custom attributes:
-            - order (int): number which indicated the position
-            - label (str): nice name
-
         Args:
             widget(QtWidgets.QWidget): instance of a widget
 
@@ -194,12 +190,10 @@ class ManageProjectWidget(QtWidgets.QWidget):
 
         """
 
-        required = ["order", "label"]
-        if all(hasattr(widget, r) for r in required):
-            raise AttributeError("Widget %s is missing an attribute"
-                                 % widget.objectName())
+        # Check if widget has the required attributes
+        self.validate_widget(widget)
 
-        has_item = self.tab_widget.itemAt(widget.order)
+        has_item = self.tab_widget.widget(widget.order)
         if has_item:
             raise RuntimeError("Current index `%i` is occupied" % widget.order)
 
