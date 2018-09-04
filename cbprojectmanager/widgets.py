@@ -205,6 +205,106 @@ class ManageProjectWidget(QtWidgets.QWidget):
 
         self.tab_widget.insertTab(widget.order, widget, widget.label)
 
+    def validate_widget(self, widget):
+        """Validate if widget has the required attributes
+
+        Required attributes:
+            - order (int)
+            - label (str)
+
+        Raises AssertionError if the widget is invalid
+
+        """
+
+        required = {"order": int, "label": str}
+        for attr, attr_type in required.items():
+            assert hasattr(widget, attr), ("%s is missing attribute `%s`"
+                                           % (widget.__class__.__name__, attr))
+            value = getattr(widget, attr, None)
+            assert value is not None, ("Attribute `%s` cannot be None" %
+                                       attr)
+            assert isinstance(value, attr_type), (
+                    "Attribute `%s` is not of type `%s`" % (attr, attr_type)
+            )
+
+    def on_update(self):
+
+        # Trigger the widget's update method
+        widget = self.tab_widget.currentWidget()
+        widget.update()
+
+
+class OverviewWidget(QtWidgets.QWidget):
+
+    order = 0
+    label = "Overview"
+
+    def __init__(self, parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+
+        # Attributes
+        self.data_table = {}
+        self._tile_width = 150
+        self._tile_height = 150
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.setSpacing(5)
+
+        self.layout = layout
+
+        self.setStyleSheet(style.overview_tile)
+        self.setLayout(layout)
+
+    def add_data(self, header, data):
+        """Add information which needs to be displayed"""
+
+        if header in self.data_table:
+            print("Cannot add similar header, please use `update` in stead")
+            return
+
+        data_widget = QtWidgets.QWidget()
+        data_widget.setContentsMargins(0, 0, 0, 0)
+        data_widget.setFixedHeight(self._tile_height)
+
+        layout = QtWidgets.QVBoxLayout()
+
+        title = QtWidgets.QLabel(header.upper())
+        title.setStyleSheet(style.overview_tile_title)
+
+        formlayout = QtWidgets.QFormLayout()
+        for label, value in data.items():
+            value_label = QtWidgets.QLabel(value)
+            formlayout.addRow("%s :" % label, value_label)
+
+        layout.addWidget(title)
+        layout.addLayout(formlayout)
+        layout.addStretch()
+
+        data_widget.setLayout(layout)
+
+        self.data_table[header] = {"widget": data_widget, "data": data}
+
+        position = self.layout.count() + 1
+
+        self.layout.insertWidget(position, data_widget)
+
+    def update_data(self, header, data):
+
+        self.layout.blockSignals(True)
+
+        if header not in self.data_table:
+            return
+
+        widget = self.data_table[header]["widget"]
+        self.layout.removeWidget(widget)
+        self.data_table.pop(header, None)
+
+        self.add_data(header, data)
+
+        self.layout.blockSignals(False)
+
+    def refresh(self):
+        pass
 
 class TaskWidget(QtWidgets.QWidget):
 
