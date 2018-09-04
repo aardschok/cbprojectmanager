@@ -165,12 +165,14 @@ class ManageProjectWidget(QtWidgets.QWidget):
         button_hlayout = QtWidgets.QHBoxLayout()
         button_hlayout.addStretch()
 
+        # Generic update button
         update_button = QtWidgets.QPushButton("Update")
         update_button.setMinimumWidth(120)
         update_button.setStyleSheet(style.flat_button)
 
         button_hlayout.addWidget(update_button)
 
+        # Create basic layout
         layout.addWidget(text)
         layout.addWidget(tab_widget)
         layout.addLayout(button_hlayout)
@@ -178,6 +180,12 @@ class ManageProjectWidget(QtWidgets.QWidget):
         self.setLayout(layout)
 
         self.tab_widget = tab_widget
+        self.update_button = update_button
+
+        self.connect_signals()
+
+    def connect_signals(self):
+        self.update_button.clicked.connect(self.on_update)
 
     def add_widget(self, widget):
         """Add a widget to the tab widget of the Manage widget
