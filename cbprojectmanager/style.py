@@ -20,6 +20,24 @@ font-size: 24px;
 
 """
 
+overview_tile = """QWidget {
+color: %s;
+background-color: %s;
+}
+""" % (
+    colors.default,
+    colors.dark
+)
+
+overview_tile_title = """QLabel {
+height: 16px;
+font: bold;
+font-size: 14px; 
+color: %s;
+background-color: %s;
+}
+""" % (colors.default, colors.dark)
+
 flat_button = """QPushButton {
 font-size: 20px;
 height: 38px;
