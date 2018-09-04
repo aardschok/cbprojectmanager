@@ -138,6 +138,51 @@ class Window(QtWidgets.QWidget):
                                       project["name"],
                                       userData=project["_id"])
 
+    def get_project(self, as_id=False):
+
+        current_index = self._projects.currentIndex()
+        if current_index == 0:
+            return
+
+        item = self._projects.itemAt(current_index)
+        if as_id:
+            _id = item.userData()
+            assert _id, "This is a bug!"
+            return _id
+
+        project_name = item.text()
+        assert project_name, "This is a bug!"
+
+        return project_name
+
+    def on_project_changed(self, name):
+
+        current_project = self._projects.currentText()
+        if name == current_project:
+            return
+
+        self.refresh()
+
+        idx = self._projects.findText(name)
+        if idx == -1:
+            raise RuntimeError("Something went wrong, can't find name `%s`"
+                               % name)
+
+        self._projects.setCurrentIndex(idx)
+
+        # Refresh the overview with
+        self._overview.refresh(name)
+
+    def on_project_index_changed(self):
+        project_name = self._projects.currentText()
+        self._overview.refresh(project_name)
+
+    def on_create(self):
+        create_widget = CreateProjectWidget(parent=self)
+        create_widget.data_changed.connect(self.on_project_changed)
+
+        create_widget.show()
+
 
 if __name__ == '__main__':
 
