@@ -152,7 +152,6 @@ class ManageProjectWidget(QtWidgets.QWidget):
 
     order = 1
     label = "Manage"
-    data_changed = QtCore.Signal(dict)
 
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
