@@ -39,23 +39,47 @@ class Window(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
 
         # Main control
+        ctrl_button_w = 30
+        ctrl_button_h = 30
+
+        # Calculate icon size
+        icon_size = QtCore.QSize(ctrl_button_w - 4, ctrl_button_h - 4)
+
         main_control_layout = QtWidgets.QHBoxLayout()
 
         database_label = QtWidgets.QLabel()
 
+        # Main buttons - create
+        create_button = QtWidgets.QPushButton()
+        create_icon = qta.icon("fa.plus-square", color=style.colors.light)
+
+        create_button.setIconSize(icon_size)
+
+        create_button.setFixedWidth(ctrl_button_w)
+        create_button.setFixedHeight(ctrl_button_h)
+
+        create_button.setIcon(create_icon)
+        create_button.setStyleSheet(cbstyle.flat_button)
+
+        # Main buttons - refresh
+        refresh_button = QtWidgets.QPushButton()
+        refresh_icon = qta.icon("fa.refresh", color=style.colors.light)
+
+        refresh_button.setIconSize(icon_size)
+
+        refresh_button.setFixedWidth(ctrl_button_w)
+        refresh_button.setFixedHeight(ctrl_button_h)
+
+        refresh_button.setIcon(refresh_icon)
+        refresh_button.setStyleSheet(cbstyle.flat_button)
+
+        # Project switch control
         projects_label = QtWidgets.QLabel("Project:")
         projects = QtWidgets.QComboBox()
         projects.insertItem(0, "<None>")
 
-        refresh_button = QtWidgets.QPushButton()
-        refresh_icon = qta.icon("fa.refresh", color=style.colors.light)
-
-        refresh_button.setFixedWidth(24)
-        refresh_button.setFixedHeight(24)
-
-        refresh_button.setIcon(refresh_icon)
-
         # Add buttons to the main control layout
+        main_control_layout.addWidget(create_button)
         main_control_layout.addStretch()
         main_control_layout.addWidget(database_label)
         main_control_layout.addWidget(projects_label)
@@ -69,7 +93,6 @@ class Window(QtWidgets.QWidget):
         stacked_widget = QtWidgets.QStackedWidget()
 
         # Control widgets which make the tool
-        create_widget = CreateProjectWidget(parent=self)
         manager_widget = ManageProjectWidget(parent=self)
 
         stacked_widget.insertWidget(manager_widget.order, manager_widget)
