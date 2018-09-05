@@ -16,7 +16,7 @@ class CreateProjectWidget(QtWidgets.QWidget):
     order = -1
     label = "Create"
 
-    data_changed = QtCore.Signal()
+    data_changed = QtCore.Signal(str)
 
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
@@ -132,14 +132,15 @@ class CreateProjectWidget(QtWidgets.QWidget):
         else:
             template = lib.get_template()
 
-        self.log.info("Creating project ..")
-        self.log.info("Project name: %s" % project_name)
+        print("Creating project named %s" % project_name)
 
-        print("0")
         result = lib.create_project(project_name, template)
         if not result:
-            self.log.error("Error occurred in creating project")
+            print("Error occurred in creating project")
             return
+
+        # Emit name of new project
+        self.data_changed.emit(project_name)
 
         self.close()
 
