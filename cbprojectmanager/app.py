@@ -29,6 +29,9 @@ module.window = None
 
 class Window(QtWidgets.QWidget):
 
+    project_changed = QtCore.Signal(str)
+    log = logging.getLogger("Project Manager")
+
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
 
@@ -96,6 +99,10 @@ class Window(QtWidgets.QWidget):
         # Control widgets which make the tool
         manager_widget = ManageProjectWidget(parent=self)
 
+        # Sub manager widgets
+        overview = OverviewWidget()
+        manager_widget.add_widget(overview)
+
         stacked_widget.insertWidget(manager_widget.order, manager_widget)
 
         # Navigation panel widget
@@ -103,11 +110,6 @@ class Window(QtWidgets.QWidget):
 
         # Add buttons to navigation panel
         navigation_panel.add_button(manager_widget.label, manager_widget.order)
-
-        # By adding widget we create a popup
-        navigation_panel.add_button(create_widget.label,
-                                    create_widget.order,
-                                    widget=create_widget)
 
         # Add widgets to the SplitWidget
         split_widget.addWidget(navigation_panel)
