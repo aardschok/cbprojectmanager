@@ -176,6 +176,9 @@ class Window(QtWidgets.QWidget):
     def populate_projects(self, projects):
         """Add projects to project dropdown menu"""
 
+        completer = QtWidgets.QCompleter([p["name"] for p in projects])
+        self._projects.setCompleter(completer)
+
         for idx, project in enumerate(projects):
             self._projects.insertItem(idx + 1,
                                       project["name"],
