@@ -6,21 +6,22 @@
 """
 
 import sys
-import site
 
-site.addsitedir("C:/Users/Guest4/Development/colorbleed/core")
+import logging
 
-from avalon.vendor.Qt import QtWidgets
+from avalon.vendor.Qt import QtWidgets, QtCore
 from avalon.vendor import qtawesome as qta
 from avalon import api, style
 
 from cbprojectmanager.widgets import (
     CreateProjectWidget,
     ManageProjectWidget,
+    OverviewWidget,
     Navigation
 )
 
 from cbprojectmanager import lib
+from cbprojectmanager import style as cbstyle
 
 module = sys.modules[__name__]
 module.window = None
