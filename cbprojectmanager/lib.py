@@ -2,7 +2,8 @@
 
 Note :
     Some function are derived from avalon.io, some are not available in
-    avalon.io.
+    avalon.io. Some functions will be move to avalon.io when development is
+    finished.
 
 """
 import json
@@ -60,6 +61,12 @@ def install():
 
     database_name = api.Session.get("AVALON_DB", __DATABASE_NAME)
     self._database = self._mongo_client[database_name]
+
+    self._is_installed = True
+
+
+def get_database_name():
+    return self._database.name
 
 
 def create_collection(name):
@@ -156,10 +163,6 @@ def create_project(name, template=None):
     return True
 
 
-def get_database_name():
-    return self._database.name
-
-
 def get_collection(name):
     exists = next(c for c in self._database.collection_names()
                   if c == name)
@@ -169,6 +172,22 @@ def get_collection(name):
     collection = self._database.get_collection(name)
 
     return collection
+
+
+def get_project(name):
+    """Get the project document by name
+
+    Args:
+        name(str): name of the project
+    Returns:
+        dict
+
+    """
+    projects = [p for p in list(get_projects()) if p["name"] == name]
+    if len(projects) == 1:
+        return projects[0]
+
+    return
 
 
 def get_projects():
@@ -192,20 +211,16 @@ def get_projects():
             yield document
 
 
-def get_project(name):
-    """Get the project document by name
+def get_template():
+    """Get the project template from resources"""
 
-    Args:
-        name(str): name of the project
-    Returns:
-        dict
+    module_dir = os.path.dirname(__file__)
+    template_path = os.path.join(module_dir, "res", "base_template.json")
 
-    """
-    projects = [p for p in list(get_projects()) if p["name"] == name]
-    if len(projects) == 1:
-        return projects[0]
+    with open(template_path, "r") as f:
+        template = json.load(f)
 
-    return
+    return template
 
 
 def get_project_template(name_or_project):
@@ -235,13 +250,34 @@ def get_project_template(name_or_project):
     return document
 
 
-def get_template():
-    """Get the project template from"""
+def get_assets(project, silo=None):
+    """Fetch all tje assets of a project
 
-    module_dir = os.path.dirname(__file__)
-    template_path = os.path.join(module_dir, "res", "base_template.json")
+    Args:
+        project(str): project name
+        silo(str): name of the silo
 
-    with open(template_path, "r") as f:
-        template = json.load(f)
+    Returns:
 
-    return template
+    """
+
+    with_parent = {}
+    if project not in self._database:
+        raise ValueError("Project is not in this database")
+
+    if silo:
+        try:
+            document = next(d for d in self._database[project].distinct("silo")
+                            if d["name"] == silo)
+        except StopIteration:
+            raise ValueError("Given silo `%s` not found in project `%s`"
+                             % (silo, project))
+
+        with_parent = {"parent": document["_id"]}
+
+    query = {"type": "asset"}
+    query.update(with_parent)
+
+    result = list(self._database[project].find(query))
+
+    return result
