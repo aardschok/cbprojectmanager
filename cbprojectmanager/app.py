@@ -122,16 +122,22 @@ class Window(QtWidgets.QWidget):
 
         self.setLayout(layout)
 
+        # To connect widget store in self attribute
         self._navigation_panel = navigation_panel
         self._stacked_widget = stacked_widget
 
         self._database_label = database_label
+        self._create_button = create_button
         self._projects = projects
-        self._refersh_button = refresh_button
+        self._refresh_button = refresh_button
+
+        self._overview = overview
 
         self.connect_signals()
 
         self.refresh()
+
+        manager_widget.setFocus(True)
 
     def connect_signals(self):
         """Create connections between widgets"""
@@ -139,7 +145,11 @@ class Window(QtWidgets.QWidget):
         self._navigation_panel.index_changed.connect(
             self._stacked_widget.setCurrentIndex)
 
-        self._refersh_button.clicked.connect(self.refresh)
+        self.project_changed.connect(self.on_project_changed)
+
+        self._refresh_button.clicked.connect(self.refresh)
+        self._create_button.clicked.connect(self.on_create)
+        self._projects.currentIndexChanged.connect(self.on_project_index_changed)
 
     def refresh(self):
         """Refresh connection to database and """
