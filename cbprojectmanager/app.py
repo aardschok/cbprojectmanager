@@ -3,6 +3,7 @@
 * http://docs.efestolab.uk/tools/project-manager/index.html
 * https://wedevs.s3.amazonaws.com/uploads/2016/02/projects.jpg
 * https://www.scoro.com/wp-content/uploads/2017/02/FunctionFox.jpg
+* http://www.digitalmediaworld.tv/images/stories/July-16/3/Ftrack-cinema4d-06-ftrack.jpg
 """
 
 import sys
@@ -154,10 +155,16 @@ class Window(QtWidgets.QWidget):
     def refresh(self):
         """Refresh connection to database and """
 
+        def sorter(project):
+            """Sort based on order attribute of the plugin"""
+            return project["name"]
+
         lib.install()
         self.set_database_label(lib.get_database_name())
 
-        projects = list(lib.get_projects())
+        query = list(lib.get_projects())
+        projects = sorted(query, key=sorter)
+
         self.projects = {p["name"]: p["_id"] for p in projects}
 
         self.populate_projects(projects)
