@@ -236,6 +236,20 @@ class ManageProjectWidget(QtWidgets.QWidget):
 
 
 class OverviewWidget(QtWidgets.QWidget):
+    """Main widget for overview of generic information
+
+    A collection of general information will be visible per block as seen
+    in the example below
+
+    Example of information block:
+        ----------------------------------------
+        | General:                              |
+        | name: Project X                       |
+        | type: feature                         |
+        | fps: 25                               |
+        | resolution: 4096x2160                 |
+        -----------------------------------------
+    """
 
     order = 0
     label = "Overview"
@@ -264,7 +278,6 @@ class OverviewWidget(QtWidgets.QWidget):
             return
 
         data_widget = QtWidgets.QWidget()
-        data_widget.setContentsMargins(0, 0, 0, 0)
         data_widget.setFixedHeight(self._tile_height)
 
         layout = QtWidgets.QVBoxLayout()
@@ -293,9 +306,6 @@ class OverviewWidget(QtWidgets.QWidget):
 
         self.layout.blockSignals(True)
 
-        if header not in self.data_table:
-            return
-
         widget = self.data_table[header]["widget"]
         self.layout.removeWidget(widget)
         self.data_table.pop(header, None)
@@ -304,8 +314,58 @@ class OverviewWidget(QtWidgets.QWidget):
 
         self.layout.blockSignals(False)
 
-    def refresh(self):
-        pass
+        return True
+
+    def refresh(self, name):
+        print("Loading overview of: %s" % name)
+
+        size = self.size()
+        self.resize(0, 0)
+
+        # Remove stretch
+        stretch_idx = self.layout.count() - 1
+        self.layout.takeAt(stretch_idx)
+
+        # Start adding or updating data blocks
+        general_data = self.fetch_general_data(name)
+        for header, data in general_data.items():
+            if header in self.data_table:
+                self.update_data(header, data)
+            else:
+                self.add_data(header, data)
+
+        # Add stretch again
+        self.layout.addStretch()
+
+        self.resize(size)
+
+    def fetch_general_data(self, name):
+        """Get the general data of a project
+
+        Args:
+            name(str): name of the project
+
+        Returns:
+            dict
+        """
+
+        n_a = "N/A"
+        project = lib.get_project(name)
+
+        data = {
+            "general": {"name": project["name"],
+                        "type": project["data"].get("type", n_a),
+                        "fps": project["data"].get("fps", n_a),
+                        "resolution": project["data"].get("resolution", n_a),
+                        },
+            "dates": {
+                "Start": project["data"].get("startdate", n_a),
+                "End": project["data"].get("enddate", n_a)
+            }
+        }
+
+        return data
+
 
 class TaskWidget(QtWidgets.QWidget):
 
